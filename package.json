@@ -1,0 +1,30 @@
+{
+  "name": "bc-simulations",
+  "version": "0.0.1",
+  "description": "BC simulations",
+  "main": "index.html",
+  "scripts": {
+    "start": "ws --directory src",
+    "deploy": "npm run deploy:surge.sh",
+    "deploy:surge.sh": "shx mkdir -p dist && shx cp -R \"src/*\" dist/ && shx cp config/surge.sh/200.html dist/ && surge dist/ bc-simulation.surge.sh",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/GillianPetit/BC-Simulations.git"
+  },
+  "author": "Gillian Petit <gillian.schafer@ucalgary.ca>",
+  "private": true,
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/GillianPetit/BC-Simulations/issues"
+  },
+  "homepage": "https://github.com/GillianPetit/BC-Simulations#readme",
+  "devDependencies": {
+    "local-web-server": "^4.0.0",
+    "shx": "^0.3.2"
+  },
+  "dependencies": {
+    "surge": "^0.21.3"
+  }
+}
