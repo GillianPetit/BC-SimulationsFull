@@ -44,1853 +44,7 @@ function dataloaded(data) {
 	let types = ["All" , "RTC", "Universal"]
 	
 	let dropDown = d3.select("#button1")
-		.append("select")
-		.on("change" , button) 
-		.attr("id" , "type")
-
-	
-	//Button for benefit Amounts
-	let amount = ["All" , "1000", "5000", "10000", "20000"]
-
-	let dropDown2 = d3.select("#button2")
-		.append("select")
-		.on("change" , button)
-		.attr("id" , "amount")
-
-	//Button for income test level
-	let income = ["All" , "Family" , "Individual"]
-
-	let dropDown3 = d3.select("#button3")
-		.append("select")
-		.on("change" , button)
-		.attr("id" , "income")
-
-	//Button for payment level
-	let payment = ["All" , "Family" , "Individual"]
-
-	let dropDown4 = d3.select("#button4")
-		.append("select")
-		.on("change" , button)
-		.attr("id" , "payment")
-
-	//Button for Brr
-	let brr = ["All" , "15%" , "30%" , "50%" , "75%"]
-
-	let dropDown5 = d3.select("#button5")
-		.append("select")
-		.on("change" , button)
-		.attr("id" , "brr")
-
-	//Button Function 
-	function button(){
-		let typeChoice = d3.select("#type").property("value")
-		let amountChoice = d3.select("#amount").property("value")
-		let incomeChoice = d3.select("#income").property("value")
-		let paymentChoice = d3.select("#payment").property("value")
-		let brrChoice = d3.select("#brr").property("value")
-
-		console.log(typeChoice)
-
-		if(typeChoice==="All"){
-			if (amountChoice==="All"){
-				if (incomeChoice==="All"){
-					if(paymentChoice=="All") {
-						if(brrChoice=="All"){
-							dataFiltered = dataAll
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataAll.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataAll.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataAll.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataAll.filter(function(d){
-							return d.brr==75})
-						} 
-					} else if(paymentChoice=="Family") {
-						dataFiltered1 = dataAll.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered1
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered1.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered1.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered1.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered1.filter(function(d){
-							return d.brr==75})
-						} 
-					} else if(paymentChoice=="Individual") {
-						dataFiltered1 = dataAll.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered1
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered1.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered1.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered1.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered1.filter(function(d){
-							return d.brr==75})
-						}
-					}	
-				} else if (incomeChoice==="Family"){
-					dataFiltered1 = dataAll.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"})
-					if(paymentChoice=="All") {
-					dataFiltered2 = dataFiltered1
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered2
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered2 = dataFiltered1.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered2
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered2 = dataFiltered1.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered2
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered1 = dataAll.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"})
-					if(paymentChoice=="All") {
-						dataFiltered2 = dataFiltered1
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered2
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered2 = dataFiltered1.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered2
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered2 = dataFiltered1.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered2
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered2.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				}	
-			} else if (amountChoice==="1000"){
-				dataFiltered1 = dataAll.filter(function(d){
-					return d.benefits===1000})
-				if (incomeChoice==="All"){
-					dataFiltered2 = dataFiltered1
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Family"){
-					dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"})
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				}	
-			} else if (amountChoice==="5000"){
-				dataFiltered1 = dataAll.filter(function(d){
-					return d.benefits===5000})
-				if (incomeChoice==="All"){
-					dataFiltered2 = dataFiltered1
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Family"){
-					dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"})
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				}	
-			} else if (amountChoice==="10000"){
-				dataFiltered1 = dataAll.filter(function(d){
-					return d.benefits===10000
-				})
-				if (incomeChoice==="All"){
-					dataFiltered2 = dataFiltered1
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Family"){
-					dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"})
-					if(paymentChoice=="All") {
-						dataFiltered3 = dataFiltered2
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Family") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					} else if(paymentChoice=="Individual") {
-						dataFiltered3 = dataFiltered2.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered3
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered3.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				}	
-			}	
-		} else if (typeChoice === "RTC"){
-			dataFiltered1 = data.filter(function(d){
-					return d.group==="RTC"
-				})
-			if (amountChoice==="All"){
-				dataFiltered2 = dataFiltered1
-					if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-						if (paymentChoice==="All"){
-							dataFiltered4 = dataFiltered3
-							if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-						} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-							if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-						} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-							if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-						}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"})
-					if (paymentChoice==="All"){
-							dataFiltered4 = dataFiltered3
-							if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-							if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-							if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-						}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-							dataFiltered4 = dataFiltered3
-								if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-						} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-							if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-						} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-							if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-							} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-							}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-							}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-							}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-						}
-				}
-			} else if (amountChoice==="1000"){
-				dataFiltered2 = dataFiltered1.filter(function(d){
-					return d.benefits===1000})
-				if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-					if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				}	
-			} else if (amountChoice==="5000"){
-				dataFiltered1 =  data.filter(function(d){
-					return d.group==="RTC"})
-				dataFiltered2 = dataFiltered1.filter(function(d){
-					return d.benefits===5000})
-				if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-					if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				}	
-			} else if (amountChoice==="10000"){
-				dataFiltered2 = dataFiltered1.filter(function(d){
-					return d.benefits===10000})
-				if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-					if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				}	
-			} else if (amountChoice==="20000"){
-				dataFiltered2 = dataFiltered1.filter(function(d){
-					return d.benefits===20000})
-				if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-					if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-						dataFiltered4 = dataFiltered3
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-							}
-					} else if (paymentChoice === "Family"){
-							dataFiltered4 = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					} else if (paymentChoice === "Individual"){
-						dataFiltered4 = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						if(brrChoice=="All"){
-							dataFiltered = dataFiltered4
-						} else if (brrChoice==="15%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==15})
-						}  else if (brrChoice==="30%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==30})
-						}  else if (brrChoice==="50%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==50})
-						}  else if (brrChoice==="75%"){
-							dataFiltered = dataFiltered4.filter(function(d){
-							return d.brr==75})
-						}
-					}
-				}
-			}	
-		} else if (typeChoice === "Universal"){
-			dataFiltered1 = data.filter(function(d){
-					return d.group==="Universal"})
-			if (amountChoice==="All"){
-				dataFiltered2 = dataFiltered1
-					if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-						if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-						} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"})
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-					}
-				}
-			} else if (amountChoice==="1000"){
-				dataFiltered2 = dataFiltered1.filter(function(d){
-					return d.benefits===1000
-				})
-				if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-						} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						}
-				}	
-			} else if (amountChoice==="5000"){
-				dataFiltered1 =  data.filter(function(d){
-					return d.group==="RTC"
-				})
-				dataFiltered2 = dataFiltered1.filter(function(d){
-					return d.benefits===5000
-				})
-					if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-						} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						}
-				}	
-			} else if (amountChoice==="10000"){
-				dataFiltered2 = dataFiltered1.filter(function(d){
-					return d.benefits===10000})
-				if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-						} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						}
-				}	
-			} else if (amountChoice==="20000"){
-				dataFiltered2 = dataFiltered1.filter(function(d){
-					return d.benefits===20000})
-				if (incomeChoice==="All"){
-						(dataFiltered3 = dataFiltered2)
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-					}
-				} else if (incomeChoice==="Family"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Family" || d.income==="N/A"
-					})
-					if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-					} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-					} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-					}
-				} else if (incomeChoice==="Individual"){
-					dataFiltered3 = dataFiltered2.filter(function(d){
-						return d.income==="Individual" || d.income==="N/A"
-					})
-						if (paymentChoice==="All"){
-							dataFiltered = dataFiltered3
-						} else if (paymentChoice === "Family"){
-							dataFiltered = dataFiltered3.filter(function(d){
-								return d.payment==="Family"})
-						} else if (paymentChoice === "Individual"){
-						dataFiltered = dataFiltered3.filter(function(d){
-							return d.payment==="Individual"	})
-						}
-				}	
-			}	
-			}	
-		showData(dataFiltered)
-	}
-	
-	//Insert text into BI Types button
+		
 	dropDown.selectAll("option")
 		.data(types)
 		.enter()
@@ -1900,7 +54,12 @@ function dataloaded(data) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
 
-	//Insert text into Benefit Amounts button
+	
+	//Button for Benefit Amount
+	let amount = [ "1000", "5000", "10000", "20000"]
+
+	let dropDown2 = d3.select("#button2")
+
 	dropDown2.selectAll("option")
 		.data(amount)
 		.enter()
@@ -1910,7 +69,13 @@ function dataloaded(data) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
 
-	//Insert text into Income Unit button
+
+		
+	//Button for Income Test Level
+	let income = [ "All" , "Family" , "Individual"]
+
+	let dropDown3 = d3.select("#button3")
+
 	dropDown3.selectAll("option")
 		.data(income)
 		.enter()
@@ -1918,9 +83,15 @@ function dataloaded(data) {
 		.attr("value" , function (d) {return d})
 		.text(function (d) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-                    })	
+                    })
 
-	//Insert text into Payment button
+
+			
+	//Button for Payment Unit Level
+	let payment = [ "All" , "Family" , "Individual"]
+
+	let dropDown4 = d3.select("#button4")
+
 	dropDown4.selectAll("option")
 		.data(payment)
 		.enter()
@@ -1928,20 +99,228 @@ function dataloaded(data) {
 		.attr("value" , function (d) {return d})
 		.text(function (d) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-                    })	
-
-	//Insert text into BRR button
-	dropDown5.selectAll("option")
-		.data(brr)
-		.enter()
-		.append("option")
-		.attr("value" , function (d) {return d})
-		.text(function (d) {
-                        return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-                    })	
+                    })
 
 
 
+
+	//Create functions for updates - if type button pressed first
+	dropDown.on("change", function(){
+		var values = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values.push(this.value)})
+		
+			console.log(values)
+
+		if(values.length>0 && values != "All"){
+			dataFilteredType = dataAll.filter(function(d){return d.group==values})
+		} else{dataFilteredType = dataAll}
+
+		dataFiltered = dataFilteredType
+
+		dropDown2.on("change", function(){
+		var values2 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values2.push(this.value)})
+		
+			console.log(values2)
+
+		if(values2.length>0 ){
+			dataFilteredAmount = dataFilteredType.filter(function(d){return d.benefits==parseInt(values2[0]) || d.benefits==parseInt(values2[1]) || d.benefits==parseInt(values2[2]) || d.benefits==parseInt(values2[3]) })
+		} else{dataFilteredAmount = dataFilteredType}
+
+		console.log(dataFilteredAmount)	
+
+		dataFiltered = dataFilteredAmount
+
+
+		dropDown3.on("change", function(){
+		var values3 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values3.push(this.value)})
+		
+			console.log(values3)
+
+		if(values3.length>0 && values3 != "All" ){
+			dataFilteredIncome = dataFilteredAmount.filter(function(d){return d.income == values3 || d.income == "N/A" })
+		} else{dataFilteredIncome = dataFilteredAmount}
+
+		dataFiltered = dataFilteredIncome
+
+	
+
+
+	dropDown4.on("change", function(){
+		var values4 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values4.push(this.value)})
+		
+			console.log(values4)
+
+		if(values4.length>0 && values4 != "All" ){
+			dataFilteredPayment = dataFilteredIncome.filter(function(d){return d.payment == values4 })
+		} else{dataFilteredPayment = dataFilteredIncome}
+
+		dataFiltered = dataFilteredPayment
+
+		showData(dataFiltered)
+
+	})
+
+			showData(dataFiltered)
+
+
+		})
+	
+
+			showData(dataFiltered)
+
+		})
+
+
+		showData(dataFiltered)
+
+		})
+
+
+
+
+//If Benefit amount button is pressed first
+	dropDown2.on("change", function(){
+			var values2 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values2.push(this.value)})
+		
+			console.log(values2)
+
+		if(values2.length>0 ){
+			dataFilteredAmount = dataAll.filter(function(d){return d.benefits==parseInt(values2[0]) || d.benefits==parseInt(values2[1]) || d.benefits==parseInt(values2[2]) || d.benefits==parseInt(values2[3]) })
+		} else{dataFilteredAmount = dataAll}
+
+		console.log(dataFilteredAmount)	
+
+		dataFiltered = dataFilteredAmount
+
+
+	dropDown3.on("change", function(){
+		var values3 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values3.push(this.value)})
+		
+			console.log(values3)
+
+		if(values3.length>0 && values3 != "All" ){
+			dataFilteredIncome = dataFilteredAmount.filter(function(d){return d.income == values3 || d.income == "N/A" })
+		} else{dataFilteredIncome = dataFilteredAmount}
+
+		console.log(dataFilteredAmount)	
+
+		dataFiltered = dataFilteredIncome
+		
+
+	dropDown4.on("change", function(){
+		var values4 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values4.push(this.value)})
+		
+			console.log(values4)
+
+		if(values4.length>0 && values4 != "All" ){
+			dataFilteredPayment = dataFilteredIncome.filter(function(d){return d.payment == values4 })
+		} else{dataFilteredPayment = dataFilteredIncome}
+
+		dataFiltered = dataFilteredPayment
+
+		showData(dataFiltered)
+
+		})
+		showData(dataFiltered)
+
+		})
+
+			showData(dataFiltered)
+	})
+
+
+
+//If Income button pressed first
+		dropDown3.on("change", function(){
+			var values = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values.push(this.value)})
+		
+			console.log(values)
+
+		if(values.length>0 && values != "All" ){
+			dataFilteredIncome = dataAll.filter(function(d){return d.income == values || d.income == "N/A" })
+		} else{dataFilteredIncome = dataAll}
+
+		dataFiltered = dataFilteredIncome
+
+	dropDown4.on("change", function(){
+		var values4 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values4.push(this.value)})
+		
+			console.log(values4)
+
+		if(values4.length>0 && values4 != "All" ){
+			dataFilteredPayment = dataFilteredIncome.filter(function(d){return d.payment == values4 })
+		} else{dataFilteredPayment = dataFilteredIncome}
+
+		dataFiltered = dataFilteredPayment
+
+		showData(dataFiltered)
+
+		})
+	
+
+		showData(dataFiltered)
+	
+		})
+
+
+//If pyament button pressed first
+		dropDown4.on("change", function(){
+		var values4 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values4.push(this.value)})
+		
+			console.log(values4)
+
+		if(values4.length>0 && values4 != "All" ){
+			dataFilteredPayment = dataAll.filter(function(d){return d.payment == values4 })
+		} else{dataFilteredPayment = dataAll}
+
+		dataFiltered = dataFilteredPayment
+
+		showData(dataFiltered)
+
+		})
+
+	
+
+	
 
 		}
 
