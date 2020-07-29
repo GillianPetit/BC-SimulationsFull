@@ -120,6 +120,7 @@ function dataloaded(data) {
 
 		dataFiltered = dataFilteredType
 
+
 		dropDown2.on("change", function(){
 		var values2 = [];
 	
@@ -317,14 +318,13 @@ function dataloaded(data) {
 		showData(dataFiltered)
 
 		})
-
-	
-
-	
-
 		}
 
 
+
+
+
+//Show Data function
 function showData(data){
 
 	let idUpdate = []
@@ -334,14 +334,9 @@ function showData(data){
 
 	}
 
-
-
 	data.forEach(function(d, i){
 		d.id = idUpdate[i]
 	})
-
-
-
 
 	//Set up bandwidth/position scale. Set different total height dependent on # of observations
 	let rangeScale = d3.scaleLinear()
@@ -359,11 +354,13 @@ function showData(data){
 		.domain(data.map(d => d.id))
 		.padding(0.3)
 
+	
+
+	
+	//First label: BI type/group
+	
 	let joinGroup = groupSVG.selectAll("text")
 		.data(data)
-
-
-	//First label: BI type/group
 
 	joinGroup.enter()
 		.append("text")
@@ -597,7 +594,7 @@ function showData(data){
 		.attr("x", 50)
 		.attr("dy", 20)
 		.attr("fill" , "#1c5253")
-		.text("Income")
+		.text("Income (Singles)")
 
 
 	//Recipients Bar Graph
