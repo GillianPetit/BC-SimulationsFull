@@ -1,31 +1,31 @@
 let groupSVG = d3.select("#groupSVG")
 let labelSVG = d3.select("#labelSVG")
-let scaleLabelSVG = d3.select("#scaleLabelSVG")
+let incomeSVG = d3.select("#incomeSVG")
+let paymentSVG = d3.select("#paymentSVG")
 let BRRLabelSVG = d3.select("#BRRLabelSVG")
+let breakSVG = d3.select("#breakSVG")
+let recipSVG = d3.select("#recipSVG")
 let costSVG = d3.select("#costSVG")
 let povertyRateSVG = d3.select("#povertyRateSVG")
+let povertyEfficiencySVG = d3.select("#povertyEfficiencySVG")
 let povertyDepthSVG = d3.select("#povertyDepthSVG")
-let GiniSVG = d3.select("#GiniSVG")
-let recipSVG = d3.select("#recipSVG")
-let distribSVG = d3.select("#distribSVG")
 
-d3.csv("data/ubi.csv" , function(d , i, columns) {
+d3.csv("data/robin_modified.csv" , function(d , i, columns) {
 	return{
 		id : +d.id,
-		benefits : +d.Benefit,
-		scale : +d.Scale,
-		beneficiary : d.Beneficiary,
-		recipients : +d.Recipients,
-		cost : +d.Cost,
-		povertyRate : +d.PovertyRate, 
-		povertyDepth : +d.PovertyDepths,
-		gini : +d.Gini,
-		group: d.group,
+		group : d["Basic Income Type"],
+		benefits : +d["Benefit Level"],
+		income : d["Income Test"],
+		payment : d["Payment Unit"],
 		brr : +d.BRR,
-		quartile1 : +d.quartile1,
-		quartile2 : +d.quartile2,
-		quartile3 : +d.quartile3,
-		quartile4 : +d.quartile4
+		breakeven: +d["Break-Even Point"],
+		recipients : +d["All Recipients"],
+		cost : +d["Gross Cost(M)"],
+		povertyRate : +d["% change in PR"], 
+		povertyEfficiency : +d["Poverty Reduction Efficiency (B)"],
+		povertyDepth : +d["% Change in PD"], 
+
+
 	}
 }
 )
@@ -33,355 +33,1864 @@ d3.csv("data/ubi.csv" , function(d , i, columns) {
 
 function dataloaded(data) {
 
-
 	let dataAll = data.sort((a, b) => {
 		return d3.ascending(a.id , b.id)
 	})
 
-	//change baseline values from 0 to empty
-	
-	dataAll.forEach(function(d){
-		if(d.scale===0){
-			d.scale = "--"	
-			d.benefits = " -- "
-			d.brr = "--"
-		}
-	})
-
-		
-
 	showData(dataAll)
 
-
-
+	
 	//Button for BI type
-	let types = ["All" , "NIT", "Universal"]
+	let types = ["All" , "RTC", "Universal"]
 	
 	let dropDown = d3.select("#button1")
 		.append("select")
-		.on("change" , BItype) 
+		.on("change" , button) 
 		.attr("id" , "type")
 
+	
 	//Button for benefit Amounts
-	let amount = ["All" , "18000", "10000", "5000" , "1000"]
+	let amount = ["All" , "1000", "5000", "10000", "20000"]
 
 	let dropDown2 = d3.select("#button2")
 		.append("select")
-		.on("change" , BItype)
+		.on("change" , button)
 		.attr("id" , "amount")
 
-	//Button for Equivalence Scale
-	let equivScale = ["All", "1.4", "2.0"]
+	//Button for income test level
+	let income = ["All" , "Family" , "Individual"]
 
-	
 	let dropDown3 = d3.select("#button3")
 		.append("select")
-		.on("change" , BItype)
-		.attr("id" , "equivScale")
+		.on("change" , button)
+		.attr("id" , "income")
 
+	//Button for payment level
+	let payment = ["All" , "Family" , "Individual"]
 
+	let dropDown4 = d3.select("#button4")
+		.append("select")
+		.on("change" , button)
+		.attr("id" , "payment")
 
-		function BItype(){
-			let typeChoice = d3.select("#type").property("value")
-			let amountChoice = d3.select("#amount").property("value")
-			let scaleChoice = d3.select("#equivScale").property("value")
+	//Button for Brr
+	let brr = ["All" , "15%" , "30%" , "50%" , "75%"]
 
+	let dropDown5 = d3.select("#button5")
+		.append("select")
+		.on("change" , button)
+		.attr("id" , "brr")
 
-			console.log(typeChoice)
+	//Button Function 
+	function button(){
+		let typeChoice = d3.select("#type").property("value")
+		let amountChoice = d3.select("#amount").property("value")
+		let incomeChoice = d3.select("#income").property("value")
+		let paymentChoice = d3.select("#payment").property("value")
+		let brrChoice = d3.select("#brr").property("value")
 
-			if(typeChoice==="Universal"){
-				if(amountChoice === "All"){
-					if(scaleChoice === "All"){
-						dataFiltered = data.filter(function(d){
-						return d.group === "Universal "	})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.scale === 2.0})
-					} 
-				} else if(amountChoice === "18000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "	})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 18000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
+		console.log(typeChoice)
+
+		if(typeChoice==="All"){
+			if (amountChoice==="All"){
+				if (incomeChoice==="All"){
+					if(paymentChoice=="All") {
+						if(brrChoice=="All"){
+							dataFiltered = dataAll
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataAll.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataAll.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataAll.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataAll.filter(function(d){
+							return d.brr==75})
+						} 
+					} else if(paymentChoice=="Family") {
+						dataFiltered1 = dataAll.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered1
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered1.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered1.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered1.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered1.filter(function(d){
+							return d.brr==75})
+						} 
+					} else if(paymentChoice=="Individual") {
+						dataFiltered1 = dataAll.filter(function(d){
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered1
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered1.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered1.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered1.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered1.filter(function(d){
+							return d.brr==75})
+						}
+					}	
+				} else if (incomeChoice==="Family"){
+					dataFiltered1 = dataAll.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"})
+					if(paymentChoice=="All") {
+					dataFiltered2 = dataFiltered1
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered2
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
 						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 18000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered2
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
 						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 18000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-					} 
-				} else if(amountChoice === "10000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "	})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 10000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 10000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 10000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered2
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==75})
+						}
 					}
-				} else if(amountChoice === "5000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "	})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 5000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
+				} else if (incomeChoice==="Individual"){
+					dataFiltered1 = dataAll.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"})
+					if(paymentChoice=="All") {
+						dataFiltered2 = dataFiltered1
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered2
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
 						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 5000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered2
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
 						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 5000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered2
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered2.filter(function(d){
+							return d.brr==75})
+						}
 					}
-				} else if(amountChoice === "1000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "	})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 1000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 1000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "Universal "})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 1000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
+				}	
+			} else if (amountChoice==="1000"){
+				dataFiltered1 = dataAll.filter(function(d){
+					return d.benefits===1000})
+				if (incomeChoice==="All"){
+					dataFiltered2 = dataFiltered1
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
 					}
+				} else if (incomeChoice==="Family"){
+					dataFiltered2 = dataFiltered1.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered2 = dataFiltered1.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"})
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				}	
+			} else if (amountChoice==="5000"){
+				dataFiltered1 = dataAll.filter(function(d){
+					return d.benefits===5000})
+				if (incomeChoice==="All"){
+					dataFiltered2 = dataFiltered1
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Family"){
+					dataFiltered2 = dataFiltered1.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered2 = dataFiltered1.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"})
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				}	
+			} else if (amountChoice==="10000"){
+				dataFiltered1 = dataAll.filter(function(d){
+					return d.benefits===10000
+				})
+				if (incomeChoice==="All"){
+					dataFiltered2 = dataFiltered1
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Family"){
+					dataFiltered2 = dataFiltered1.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered2 = dataFiltered1.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"})
+					if(paymentChoice=="All") {
+						dataFiltered3 = dataFiltered2
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Family") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					} else if(paymentChoice=="Individual") {
+						dataFiltered3 = dataFiltered2.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered3
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered3.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				}	
+			}	
+		} else if (typeChoice === "RTC"){
+			dataFiltered1 = data.filter(function(d){
+					return d.group==="RTC"
+				})
+			if (amountChoice==="All"){
+				dataFiltered2 = dataFiltered1
+					if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+						if (paymentChoice==="All"){
+							dataFiltered4 = dataFiltered3
+							if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+						} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+							if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+						} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+							if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+						}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"})
+					if (paymentChoice==="All"){
+							dataFiltered4 = dataFiltered3
+							if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+							if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+							if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+						}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+							dataFiltered4 = dataFiltered3
+								if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+						} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+							if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+						} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+							if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+							} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+							}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+							}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+							}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+						}
+				}
+			} else if (amountChoice==="1000"){
+				dataFiltered2 = dataFiltered1.filter(function(d){
+					return d.benefits===1000})
+				if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+					if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				}	
+			} else if (amountChoice==="5000"){
+				dataFiltered1 =  data.filter(function(d){
+					return d.group==="RTC"})
+				dataFiltered2 = dataFiltered1.filter(function(d){
+					return d.benefits===5000})
+				if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+					if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				}	
+			} else if (amountChoice==="10000"){
+				dataFiltered2 = dataFiltered1.filter(function(d){
+					return d.benefits===10000})
+				if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+					if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				}	
+			} else if (amountChoice==="20000"){
+				dataFiltered2 = dataFiltered1.filter(function(d){
+					return d.benefits===20000})
+				if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+					if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+						dataFiltered4 = dataFiltered3
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+							}
+					} else if (paymentChoice === "Family"){
+							dataFiltered4 = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					} else if (paymentChoice === "Individual"){
+						dataFiltered4 = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						if(brrChoice=="All"){
+							dataFiltered = dataFiltered4
+						} else if (brrChoice==="15%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==15})
+						}  else if (brrChoice==="30%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==30})
+						}  else if (brrChoice==="50%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==50})
+						}  else if (brrChoice==="75%"){
+							dataFiltered = dataFiltered4.filter(function(d){
+							return d.brr==75})
+						}
+					}
+				}
+			}	
+		} else if (typeChoice === "Universal"){
+			dataFiltered1 = data.filter(function(d){
+					return d.group==="Universal"})
+			if (amountChoice==="All"){
+				dataFiltered2 = dataFiltered1
+					if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+						if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+						} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"})
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+					}
+				}
+			} else if (amountChoice==="1000"){
+				dataFiltered2 = dataFiltered1.filter(function(d){
+					return d.benefits===1000
+				})
+				if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+						} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						}
+				}	
+			} else if (amountChoice==="5000"){
+				dataFiltered1 =  data.filter(function(d){
+					return d.group==="RTC"
+				})
+				dataFiltered2 = dataFiltered1.filter(function(d){
+					return d.benefits===5000
+				})
+					if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+						} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						}
+				}	
+			} else if (amountChoice==="10000"){
+				dataFiltered2 = dataFiltered1.filter(function(d){
+					return d.benefits===10000})
+				if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+						} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						}
+				}	
+			} else if (amountChoice==="20000"){
+				dataFiltered2 = dataFiltered1.filter(function(d){
+					return d.benefits===20000})
+				if (incomeChoice==="All"){
+						(dataFiltered3 = dataFiltered2)
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+					}
+				} else if (incomeChoice==="Family"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Family" || d.income==="N/A"
+					})
+					if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+					} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+					} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+					}
+				} else if (incomeChoice==="Individual"){
+					dataFiltered3 = dataFiltered2.filter(function(d){
+						return d.income==="Individual" || d.income==="N/A"
+					})
+						if (paymentChoice==="All"){
+							dataFiltered = dataFiltered3
+						} else if (paymentChoice === "Family"){
+							dataFiltered = dataFiltered3.filter(function(d){
+								return d.payment==="Family"})
+						} else if (paymentChoice === "Individual"){
+						dataFiltered = dataFiltered3.filter(function(d){
+							return d.payment==="Individual"	})
+						}
+				}	
+			}	
+			}	
+		showData(dataFiltered)
+	}
 	
-				}				
-			} else if (typeChoice === "NIT"){
-				if(amountChoice === "All"){
-					if(scaleChoice === "All"){
-						dataFiltered = data.filter(function(d){
-						return d.group === "NIT"	})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.scale === 2.0})
-					} 
-				} else if(amountChoice === "18000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"	})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 18000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 18000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 18000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-					} 
-				} else if(amountChoice === "10000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"	})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 10000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 10000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 10000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-					}
-				} else if(amountChoice === "5000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"	})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 5000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 5000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 5000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-					}
-				} else if(amountChoice === "1000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"	})
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 1000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 1000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = data.filter(function(d){
-						return d.group === "NIT"})
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 1000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-					}}
-			} else if (typeChoice === "All"){
-				if(amountChoice === "All"){
-					if(scaleChoice === "All"){
-						dataFiltered = dataAll
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = dataAll
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = dataAll
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.scale === 2.0})
-					} 
-				} else if(amountChoice === "18000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = dataAll
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 18000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = dataAll
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 18000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = dataAll
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 18000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-					} 
-				} else if(amountChoice === "10000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = dataAll
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 10000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = dataAll
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 10000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = dataAll
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 10000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-					}
-				} else if(amountChoice === "5000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = dataAll
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 5000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = dataAll
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 5000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = dataAll
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 5000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-					}
-				} else if(amountChoice === "1000"){
-					if(scaleChoice === "All"){
-						dataFiltered1 = dataAll
-						dataFiltered = dataFiltered1.filter(function(d){
-						return d.benefits === 1000})
-					} else if(scaleChoice === "1.4"){
-						dataFiltered1 = dataAll
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 1000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 1.4})
-					} else if(scaleChoice === "2.0"){
-						dataFiltered1 = dataAll
-						dataFiltered2 = dataFiltered1.filter(function(d){
-						return d.benefits === 1000	})
-						dataFiltered = dataFiltered2.filter(function(d){
-						return d.scale === 2.0})
-
-			}}}
-
-
-			showData(dataFiltered)
-		}
-
+	//Insert text into BI Types button
 	dropDown.selectAll("option")
 		.data(types)
 		.enter()
@@ -391,9 +1900,7 @@ function dataloaded(data) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
 
-
-
-
+	//Insert text into Benefit Amounts button
 	dropDown2.selectAll("option")
 		.data(amount)
 		.enter()
@@ -403,18 +1910,41 @@ function dataloaded(data) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
 
+	//Insert text into Income Unit button
 	dropDown3.selectAll("option")
-		.data(equivScale)
+		.data(income)
 		.enter()
 		.append("option")
 		.attr("value" , function (d) {return d})
 		.text(function (d) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
-                    })
+                    })	
 
-	
-}
-   
+	//Insert text into Payment button
+	dropDown4.selectAll("option")
+		.data(payment)
+		.enter()
+		.append("option")
+		.attr("value" , function (d) {return d})
+		.text(function (d) {
+                        return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+                    })	
+
+	//Insert text into BRR button
+	dropDown5.selectAll("option")
+		.data(brr)
+		.enter()
+		.append("option")
+		.attr("value" , function (d) {return d})
+		.text(function (d) {
+                        return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+                    })	
+
+
+
+
+		}
+
 
 function showData(data){
 
@@ -436,8 +1966,8 @@ function showData(data){
 
 	//Set up bandwidth/position scale. Set different total height dependent on # of observations
 	let rangeScale = d3.scaleLinear()
-		.domain([6, 33])
-		.range([150, 800])
+		.domain([1, 74])
+		.range([150, 2000])
 
 	let idMap = data.length	
 	console.log(idMap)
@@ -450,24 +1980,24 @@ function showData(data){
 		.domain(data.map(d => d.id))
 		.padding(0.3)
 
-	//First label: BI type/group
 	let joinGroup = groupSVG.selectAll("text")
 		.data(data)
 
 
+	//First label: BI type/group
 
 	joinGroup.enter()
 		.append("text")
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
-		.text(d => d.group + ": " + d.beneficiary)
+		.text(d => d.group)
 
 	joinGroup.exit().remove()
 
 	joinGroup.transition()
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
-		.text(d => d.group + ": " + d.beneficiary)
+		.text(d => d.group)
 
 	d3.select("#xAxisGroup")
 		.append("text")
@@ -508,41 +2038,72 @@ function showData(data){
 		.text("Per person")
 		.attr("font-weight" , "bold")
 
-
-	//Third Label: equivalence scale
-	let joinScaleLabel = scaleLabelSVG.selectAll("text")
+	//Third label: Income Test
+	let joinIncome = incomeSVG.selectAll("text")
 		.data(data)
 
-	joinScaleLabel.enter()
+	joinIncome.enter()
 		.append("text")
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
-		.text(d => d.scale.toLocaleString())
 		.style("text-anchor", "middle")
+		.text(d => d.income)
 
-	joinScaleLabel.exit().remove()
+	joinIncome.exit().remove()
 
-	joinScaleLabel.transition()
+	joinIncome.transition()
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
-		.text(d => d.scale.toLocaleString())
 		.style("text-anchor", "middle")
+		.text(d => d.income)
 
 
-	d3.select("#scaleHeader")
+	d3.select("#incomeHeader")
 		.append("text")
 		.style("text-anchor", "middle")
 		.append("tspan")
-		.text("Equivalence")
+		.text("Income Test")
 		.attr("font-weight" , "bold")
-		.style("text-anchor", "middle")
 		.append("tspan")
 		.attr("x", 0)
 		.attr("dy", 20)
-		.text("Scale")
+		.text("Level")
 		.attr("font-weight" , "bold")
+
+	//Fourth label: Payment Unit
+	let joinPayment = paymentSVG.selectAll("text")
+		.data(data)
+
+	joinPayment.enter()
+		.append("text")
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id))
+		.style("text-anchor", "middle")
+		.text(d => d.payment)
+
+	joinPayment.exit().remove()
+
+	joinPayment.transition()
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id))
+		.style("text-anchor", "middle")
+		.text(d => d.payment)
+
+
+	d3.select("#paymentHeader")
+		.append("text")
+		.style("text-anchor", "middle")
+		.append("tspan")
+		.text("Payment Unit")
+		.attr("font-weight" , "bold")
+		.append("tspan")
+		.attr("x", 0)
+		.attr("dy", 20)
+		.text("Level")
+		.attr("font-weight" , "bold")
+
 	
-	//Fourth Label: Benefit reduction rate
+	//Fifth Label: Benefit reduction rate
 	let joinBRRLabel = BRRLabelSVG.selectAll("text")
 		.data(data)
 
@@ -550,7 +2111,8 @@ function showData(data){
 		.append("text")
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
-		.text(d => d.brr + "%")
+		.text(function(d) {if(d.group==="RTC"){return d.brr + "%"
+			} else if (d.group==="Universal"){return "NA"}})
 		.style("text-anchor", "middle")
 
 	joinBRRLabel.exit().remove()
@@ -559,7 +2121,8 @@ function showData(data){
 	joinBRRLabel.transition()
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
-		.text(d => d.brr + "%")
+		.text(function(d) {if(d.group==="RTC"){return d.brr + "%"
+			} else if (d.group==="Universal"){return "NA"}})
 		.style("text-anchor", "middle")
 
 	d3.select("#BRRHeader")
@@ -580,11 +2143,156 @@ function showData(data){
 		.text("Rate")
 		.attr("font-weight" , "bold")
 
+	//Break even point Bar Graph
+	let maxBreak = d3.max(data, d => d.breakeven)	
 
+	let widthScaleBreak = d3.scaleLinear()
+		.domain([0, maxBreak])
+		.range([0, 100])
+
+	let joinBreak = breakSVG.selectAll("rect")
+		.data(data)
+
+	joinBreak.enter()
+		.append("rect")
+		.attr("width", d => widthScaleBreak(d.breakeven) + "px")
+		.attr("fill" , "#1c5253")
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id))
+
+	joinBreak.exit().remove()
+
+	joinBreak.transition()
+		.attr("width", d => widthScaleBreak(d.breakeven) + "px")
+		.attr("fill" , "#1c5253")
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id))
+
+	let joinBreakText = breakSVG.selectAll("text")
+		.data(data)
+
+	joinBreakText.enter()
+		.append("text")
+		.text(function(d) {if(d.group==="RTC"){return "$" + d.breakeven.toLocaleString()
+			} else if (d.group==="Universal"){return "No Limit"}})
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", d => widthScaleBreak(d.breakeven) + 2)
+		.attr("font-size", "12px")
+		.attr("fill", "#1c5253")
+
+
+	joinBreakText.exit().remove()
+
+	joinBreakText.transition()
+		.text(function(d) {if(d.group==="RTC"){return "$" + d.breakeven.toLocaleString()
+			} else if (d.group==="Universal"){return "No Limit"}})
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", d => widthScaleBreak(d.breakeven) + 2)
+		.attr("font-size", "12px")
+		.attr("fill", "#1c5253")
+	
+	let xAxisBreak = d3.axisTop(widthScaleBreak)
+		.tickFormat(d => d)
+		.tickArguments([2])
+		.tickSize(2)
+	
+	
+	d3.select("#xAxisBreak")
+		.call(xAxisBreak)
+		.attr("stroke", "#1c5253")
+		.attr("fill", "none")
+		.attr("stroke-width", "0.5px")	
+
+	d3.select("#xAxisBreakText")
+		.append("text")
+		.style("text-anchor", "middle")
+		.append("tspan")
+		.attr("dx", 50)
+		.attr("dy", -10)
+		.attr("fill" , "#1c5253")
+		.text("Break-Even")
+		.style("text-anchor", "middle")
+		.append("tspan")
+		.attr("x", 50)
+		.attr("dy", 20)
+		.attr("fill" , "#1c5253")
+		.text("Income")
+
+
+	//Recipients Bar Graph
+	
+	let maxRecip = d3.max(data, d => d.recipients)
 	
 
-	
+	let widthScaleRecip = d3.scaleLinear()
+		.domain([0, maxRecip])
+		.range([0, 100])
 
+
+	let joinRecip = recipSVG.selectAll("rect")
+		.data(data)
+
+	joinRecip.enter()
+		.append("rect")
+		.attr("width", d => widthScaleRecip(d.recipients) + "px")
+		.attr("fill" , "#B19CD9")
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id))
+
+	joinRecip.exit().remove()
+
+	joinRecip.transition()
+		.attr("width", d => widthScaleRecip(d.recipients) + "px")
+		.attr("fill" , "#B19CD9")
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id))
+
+	let joinRecipText = recipSVG.selectAll("text")
+		.data(data)
+
+	joinRecipText.enter()
+		.append("text")
+		.text(d =>  d.recipients.toLocaleString())
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", d => widthScaleRecip(d.recipients) + 2)
+		.attr("font-size", "12px")
+		.attr("fill","#B19CD9")
+
+	joinRecipText.exit().remove()
+
+	joinRecipText.transition()
+		.text(d =>  d.recipients.toLocaleString())
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", d => widthScaleRecip(d.recipients) + 2)
+		.attr("font-size", "12px")
+		.attr("fill","#B19CD9")
+
+
+	
+	let xAxisRecip = d3.axisTop(widthScaleRecip)
+		.tickFormat(d => d)
+		.tickArguments([2])
+		.tickSize(2)
+	
+	
+	d3.select("#xAxisRecip")
+		.call(xAxisRecip)
+		.attr("stroke", "#B19CD9")
+		.attr("fill", "none")
+		.attr("stroke-width", "0.5px")	
+
+	d3.select("#xAxisRecipText")
+		.append("text")
+		.style("text-anchor", "middle")
+		.attr("fill", "#B19CD9")
+		.attr("transform", "translate(60, 0)")
+		.text("Recipients")
+
+		
 	//Cost bar graph
 	let maxCost = d3.max(data, d => d.cost)
 	
@@ -622,7 +2330,7 @@ function showData(data){
 		.attr("class","label value")
 		.text(d => "$" + d.cost.toLocaleString() + "M")
 		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10 )
+		.attr ("y", d => positionScale(d.id) + 14)
 		.attr("x", d => widthScaleCost(d.cost) + 2)
 		.attr("font-size", "12px")
 		.attr("fill", "#20639B")
@@ -634,7 +2342,7 @@ function showData(data){
 		.attr("class","label value")
 		.text(d => "$" + d.cost.toLocaleString() + "M")
 		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10 )
+		.attr ("y", d => positionScale(d.id) + 14)
 		.attr("x", d => widthScaleCost(d.cost) + 2)
 		.attr("font-size", "12px")
 		.attr("fill", "#20639B")
@@ -644,9 +2352,6 @@ function showData(data){
 		.tickFormat(d => d)
 		.tickArguments([2])
 		.tickSize(5)
-
-
-
 	
 	d3.select("#xAxisCost")
 		.call(xAxisCost)
@@ -663,34 +2368,34 @@ function showData(data){
 		.attr("fill", "#20639B")
 		.text("Cost, Millions")
 
+
+
 	//Poverty Rate Bar Graph
-	let maxPoverty = d3.max(data, d => d.povertyRate)
-	
+	let maxPoverty = d3.min(data, d => d.povertyRate)
 
 	let widthScalePoverty = d3.scaleLinear()
-		.domain([0, maxPoverty])
+		.domain([maxPoverty, 0])
 		.range([0, 100])
-
 
 	let joinPoverty = povertyRateSVG.selectAll("rect")
 		.data(data)
 
 	joinPoverty.enter()
 		.append("rect")
-		.attr("width", d => widthScalePoverty(d.povertyRate) + "px")
+		.attr("width", d => 100 - widthScalePoverty(d.povertyRate) + "px")
 		.attr("fill" , "#3CAEA3")
 		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id))
+		.attr("y", d => positionScale(d.id))
+		.attr("x", d => widthScalePoverty(d.povertyRate))
 
 	joinPoverty.exit().remove()
 
 	joinPoverty.transition()
-		.attr("width", d => widthScalePoverty(d.povertyRate) + "px")
+		.attr("width", d => 100 - widthScalePoverty(d.povertyRate) + "px")
 		.attr("fill" , "#3CAEA3")
 		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id))
-
-
+		.attr("y", d => positionScale(d.id))
+		.attr("x", d => widthScalePoverty(d.povertyRate))
 
 	let joinPovertyText = povertyRateSVG.selectAll("text")
 			.data(data)
@@ -699,8 +2404,8 @@ function showData(data){
 		.append("text")
 		.text(d =>  d.povertyRate.toLocaleString() + "%")
 		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10)
-		.attr("x", d => widthScalePoverty(d.povertyRate) + 2)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", 102)
 		.attr("font-size", "12px")
 		.attr("fill", "#3CAEA3")
 
@@ -709,19 +2414,16 @@ function showData(data){
 	joinPovertyText.transition()
 		.text(d =>  d.povertyRate.toLocaleString() + "%")
 		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10)
-		.attr("x", d => widthScalePoverty(d.povertyRate) + 2)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", 102)
 		.attr("font-size", "12px")
 		.attr("fill", "#3CAEA3")
 
 	
 	let xAxisPoverty = d3.axisTop(widthScalePoverty)
 		.tickFormat(d => d)
-		.tickArguments([6])
+		.tickArguments([3])
 		.tickSize(5)
-	
-
-
 	
 	d3.select("#xAxisPoverty")
 		.call(xAxisPoverty)
@@ -732,17 +2434,101 @@ function showData(data){
 	d3.select("#xAxisPovertyText")
 		.append("text")
 		.style("text-anchor", "middle")
-		.attr("transform", "translate(60, 0)")
+		.append("tspan")
+		.attr("dx", 50)
+		.attr("dy", -10)
 		.attr("fill", "#3CAEA3")
-		.text("Poverty Rate, %")
+		.text("Percentage Change in")
+		.style("text-anchor", "middle")
+		.append("tspan")
+		.attr("x", 50)
+		.attr("dy", 20)
+		.attr("fill", "#3CAEA3")
+		.text("Poverty Rate")
+
+
+	//Poverty Efficiency Bar Graph
+	let maxPovEfficiency = d3.max(data, d => d.povertyEfficiency)
+
+	let widthScalePovEfficiency = d3.scaleLinear()
+		.domain([0, maxPovEfficiency])
+		.range([0, 100])
+
+	let joinPovertyEfficiency = povertyEfficiencySVG.selectAll("rect")
+		.data(data)
+
+	joinPovertyEfficiency.enter()
+		.append("rect")
+		.attr("width", d => widthScalePovEfficiency(d.povertyEfficiency) + "px")
+		.attr("fill" , "#ED553B")
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id))
+
+	joinPovertyEfficiency.exit().remove()
+
+	joinPovertyEfficiency.transition()
+		.attr("width", d => widthScalePovEfficiency(d.povertyEfficiency) + "px")
+		.attr("fill" , "#ED553B")
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id))
+
+
+
+	let joinPovertyEfficiencyText = povertyEfficiencySVG.selectAll("text")
+			.data(data)
+
+	joinPovertyEfficiencyText.enter()
+		.append("text")
+		.text(d =>  d.povertyEfficiency.toLocaleString())
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", d => widthScalePovEfficiency(d.povertyEfficiency) + 2)
+		.attr("font-size", "12px")
+		.attr("fill" , "#ED553B")
+
+	joinPovertyEfficiencyText.exit().remove()
+
+	joinPovertyEfficiencyText.transition()
+		.text(d =>  d.povertyEfficiency.toLocaleString())
+		.attr("height" , positionScale.bandwidth)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", d => widthScalePovEfficiency(d.povertyEfficiency) + 2)
+		.attr("font-size", "12px")
+		.attr("fill" , "#ED553B")
+
+	
+	let xAxisPovertyEfficiency = d3.axisTop(widthScalePovEfficiency)
+		.tickFormat(d => d)
+		.tickArguments([2])
+		.tickSize(4)
+	
+	d3.select("#xAxisPovertyEfficiency")
+		.call(xAxisPovertyEfficiency)
+		.attr("stroke", "#ED553B")
+		.attr("fill", "none")
+		.attr("stroke-width", "0.5px")	
+
+	d3.select("#xAxisPovertyEfficiencyText")
+		.append("text")
+		.style("text-anchor", "middle")
+		.append("tspan")
+		.attr("dx", 50)
+		.attr("dy", -10)
+		.attr("fill" , "#ED553B")
+		.text("Poverty Efficiency")
+		.style("text-anchor", "middle")
+		.append("tspan")
+		.attr("x", 50)
+		.attr("dy", 20)
+		.attr("fill" , "#ED553B")
+		.text("(Per Billion $)")
+
 
 	//Poverty Depth Bar Graph
-	
-	let maxPovertyDepth = d3.max(data, d => d.povertyDepth)
-	
+	let maxPovertyDepth = d3.min(data, d => d.povertyDepth)
 
 	let widthScalePovertyDepth = d3.scaleLinear()
-		.domain([0, maxPovertyDepth])
+		.domain([maxPovertyDepth, 0])
 		.range([0, 100])
 
 
@@ -751,18 +2537,20 @@ function showData(data){
 
 	joinPovertyDepth.enter()
 		.append("rect")
-		.attr("width", d => widthScalePovertyDepth(d.povertyDepth) + "px")
+		.attr("width", d => 100 - widthScalePovertyDepth(d.povertyDepth) + "px")
 		.attr("fill" , "#BD903C")
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
+		.attr("x", d => widthScalePovertyDepth(d.povertyDepth) )
 
 	joinPovertyDepth.exit().remove()
 
 	joinPovertyDepth.transition()
-		.attr("width", d => widthScalePovertyDepth(d.povertyDepth) + "px")
+		.attr("width", d => 100 - widthScalePovertyDepth(d.povertyDepth) + "px")
 		.attr("fill" , "#BD903C")
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
+		.attr("x", d => widthScalePovertyDepth(d.povertyDepth) )
 
 
 	let joinPovertyDepthText = povertyDepthSVG.selectAll("text")
@@ -772,31 +2560,25 @@ function showData(data){
 		.append("text")
 		.text(d =>  d.povertyDepth.toLocaleString() + "%")
 		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10)
-		.attr("x", d => widthScalePovertyDepth(d.povertyDepth) + 2)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x", 102)
 		.attr("font-size", "12px")
 		.attr("fill", "#BD903C")
-
 
 	joinPovertyDepthText.exit().remove()
 
 	joinPovertyDepthText.transition()
 		.text(d =>  d.povertyDepth.toLocaleString() + "%")
 		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10)
-		.attr("x", d => widthScalePovertyDepth(d.povertyDepth) + 2)
+		.attr ("y", d => positionScale(d.id) + 14)
+		.attr("x",  102)
 		.attr("font-size", "12px")
 		.attr("fill", "#BD903C")
-
-
 	
 	let xAxisPovertyDepth = d3.axisTop(widthScalePovertyDepth)
 		.tickFormat(d => d)
 		.tickArguments([5])
 		.tickSize(5)
-	
-
-
 	
 	d3.select("#xAxisPovertyDepth")
 		.call(xAxisPovertyDepth)
@@ -807,228 +2589,17 @@ function showData(data){
 	d3.select("#xAxisPovertyDepthText")
 		.append("text")
 		.style("text-anchor", "middle")
-		.attr("transform", "translate(60, 0)")
-		.attr("fill", "#BD903C")
-		.text("Poverty Depths, %")
-
-	//Gini Bar Graph
-	
-	let maxGini = d3.max(data, d => d.gini)
-	
-
-	let widthScaleGini = d3.scaleLinear()
-		.domain([0, 0.5])
-		.range([0, 100])
-
-
-	let joinGini = GiniSVG.selectAll("rect")
-		.data(data)
-
-	joinGini.enter()
-		.append("rect")
-		.attr("width", d => widthScaleGini(d.gini) + "px")
-		.attr("fill" , "#ED553B")
-		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id))
-
-	joinGini.exit().remove()
-
-	joinGini.transition()
-		.attr("width", d => widthScaleGini(d.gini) + "px")
-		.attr("fill" , "#ED553B")
-		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id))
-
-
-	let joinGiniText = GiniSVG.selectAll("text")
-		.data(data)
-
-	joinGiniText.enter()
-		.append("text")
-		.text(d =>  d.gini.toLocaleString())
-		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10)
-		.attr("x", d => widthScaleGini(d.gini) + 2)
-		.attr("font-size", "12px")
-		.attr("fill","#ED553B")
-
-	joinGiniText.exit().remove()
-
-	joinGiniText.transition()
-		.text(d =>  d.gini.toLocaleString())
-		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10)
-		.attr("x", d => widthScaleGini(d.gini) + 2)
-		.attr("font-size", "12px")
-		.attr("fill","#ED553B")
-
-
-	
-	let xAxisGini = d3.axisTop(widthScaleGini)
-		.tickFormat(d => d)
-		.tickArguments([5])
-		.tickSize(5)
-	
-	
-	d3.select("#xAxisGini")
-		.call(xAxisGini)
-		.attr("stroke", "#ED553B")
-		.attr("fill", "none")
-		.attr("stroke-width", "0.5px")	
-
-	d3.select("#xAxisGiniText")
-		.append("text")
-		.style("text-anchor", "middle")
-		.attr("fill", "#ED553B")
-		.attr("transform", "translate(60, 0)")
-		.text("Gini Coefficient")
-
-
-	
-	//Recipients Bar Graph
-	
-	let maxRecip = d3.max(data, d => d.recipients)
-	
-
-	let widthScaleRecip = d3.scaleLinear()
-		.domain([0, maxRecip])
-		.range([0, 100])
-
-
-	let joinRecip = recipSVG.selectAll("rect")
-		.data(data)
-
-	joinRecip.enter()
-		.append("rect")
-		.attr("width", d => widthScaleRecip(d.recipients) + "px")
-		.attr("fill" , "#B19CD9")
-		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id))
-
-	joinRecip.exit().remove()
-
-	joinRecip.transition()
-		.attr("width", d => widthScaleRecip(d.recipients) + "px")
-		.attr("fill" , "#B19CD9")
-		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id))
-
-	let joinRecipText = recipSVG.selectAll("text")
-		.data(data)
-
-	joinRecipText.enter()
-		.append("text")
-		.text(d =>  d.recipients.toLocaleString())
-		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10)
-		.attr("x", d => widthScaleRecip(d.recipients) + 2)
-		.attr("font-size", "12px")
-		.attr("fill","#B19CD9")
-
-	joinRecipText.exit().remove()
-
-	joinRecipText.transition()
-		.text(d =>  d.recipients.toLocaleString())
-		.attr("height" , positionScale.bandwidth)
-		.attr ("y", d => positionScale(d.id) + 10)
-		.attr("x", d => widthScaleRecip(d.recipients) + 2)
-		.attr("font-size", "12px")
-		.attr("fill","#B19CD9")
-
-
-	
-	let xAxisRecip = d3.axisTop(widthScaleRecip)
-		.tickFormat(d => d)
-		.tickArguments([2])
-		.tickSize(2)
-	
-	
-	d3.select("#xAxisRecip")
-		.call(xAxisRecip)
-		.attr("stroke", "#B19CD9")
-		.attr("fill", "none")
-		.attr("stroke-width", "0.5px")	
-
-	d3.select("#xAxisRecipText")
-		.append("text")
-		.style("text-anchor", "middle")
-		.attr("fill", "#B19CD9")
-		.attr("transform", "translate(60, 0)")
-		.text("Recipients")
-
-
-//Distribution across income quartiles - graph
-
-	let subgroups = Object.keys(data[0]).slice(11)
-
-	console.log(subgroups)
-
-	let stack = d3.stack()
-		.keys(subgroups)
-		(data)
-
-	let widthScaleDistrib = d3.scaleLinear()
-		.domain([0, 100])
-		.range([0, 100])
-
-	 let color = d3.scaleOrdinal()
-    		.range(["#7b6888", "#6b486b", "#a05d56", "#d0743c"])
-
-
-	let joinDistrib = distribSVG		
-		.selectAll("g")
-		.data(stack, d => d.key)
-
-	joinDistrib.exit().remove()
-
-
-	let joinDistrib2 = joinDistrib.enter()
-		.append("g")
-		.attr("fill", function(d) { return color(d.key) })
-
-	
-		
-	let bars =  distribSVG		
-		.selectAll("g").selectAll(".bar")
-		.data(d => d, e => e.data.id)
-
-
-	bars.enter()
-		.append("rect")
-		.attr("class" , "bar")
-		.attr ("y", d => positionScale(d.data.id))
-		.attr("height" , positionScale.bandwidth)
-		.attr("x", d => widthScaleDistrib(d[0]))
-		.attr("width" , function(d) { return  widthScaleDistrib(d[1]) -  widthScaleDistrib(d[0]) })
-
-	
-	bars.exit().remove()
-
-	joinDistrib.transition()
-		.attr("fill", function(d) { return color(d.key) })
-	
-	bars.transition()
-		.attr ("y", d => positionScale(d.data.id))
-		.attr("height" , positionScale.bandwidth)
-		.attr("x", d => widthScaleDistrib(d[0]))
-		.attr("width" , function(d) { return  widthScaleDistrib(d[1]) -  widthScaleDistrib(d[0]) })
-
-
-	
-
-	d3.select("#xAxisDistribText")
-		.append("text")
-		.style("text-anchor", "middle")
-		.attr("fill", "black")
-		.attr("transform", "translate(60, -5)")
-		.text("Distribution Across ")
 		.append("tspan")
-		.attr("dx", -120)
+		.attr("dx", 50)
+		.attr("dy", -10)
+		.attr("fill", "#BD903C")
+		.text("Percentage Change in")
+		.style("text-anchor", "middle")
+		.append("tspan")
+		.attr("x", 50)
 		.attr("dy", 20)
-		.text("Income Quartiles")
-
-
-
+		.attr("fill", "#BD903C")
+		.text("Poverty Depths")
 
 
 
