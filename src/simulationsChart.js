@@ -88,7 +88,7 @@ function dataloaded(data) {
 
 			
 	//Button for Payment Unit Level
-	let payment = [ "All" , "Family" , "Individual"]
+	let payment = [ "All" , "SQRT(2)" , "Per Capita"]
 
 	let dropDown4 = d3.select("#button4")
 
@@ -382,7 +382,7 @@ function showData(data){
 		.text("BI Type")
 		.attr("font-weight" , "bold")
 
-	//Second label: annnual payment	
+	//Second label: annual payment	
 	let joinLabel = labelSVG.selectAll("text")
 		.data(data)
 
@@ -404,15 +404,10 @@ function showData(data){
 
 	d3.select("#labelHeader")
 		.append("text")
-		.style("text-anchor", "middle")
-		.append("tspan")
-		.text("Annual Payment")
+		.style("text-anchor", "middle")	
+		.text("G")
 		.attr("font-weight" , "bold")
-		.append("tspan")
-		.attr("x", 0)
-		.attr("dy", 20)
-		.text("Per person")
-		.attr("font-weight" , "bold")
+		
 
 	//Third label: Income Test
 	let joinIncome = incomeSVG.selectAll("text")
@@ -438,12 +433,12 @@ function showData(data){
 		.append("text")
 		.style("text-anchor", "middle")
 		.append("tspan")
-		.text("Income Test")
+		.text("Beneficiary")
 		.attr("font-weight" , "bold")
 		.append("tspan")
 		.attr("x", 0)
 		.attr("dy", 20)
-		.text("Level")
+		.text("Unit")
 		.attr("font-weight" , "bold")
 
 	//Fourth label: Payment Unit
@@ -470,12 +465,12 @@ function showData(data){
 		.append("text")
 		.style("text-anchor", "middle")
 		.append("tspan")
-		.text("Payment Unit")
+		.text("Scale")
 		.attr("font-weight" , "bold")
 		.append("tspan")
 		.attr("x", 0)
 		.attr("dy", 20)
-		.text("Level")
+		.text("Factor")
 		.attr("font-weight" , "bold")
 
 	
