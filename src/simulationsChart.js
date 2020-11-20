@@ -10,7 +10,7 @@ let povertyRateSVG = d3.select("#povertyRateSVG")
 let povertyEfficiencySVG = d3.select("#povertyEfficiencySVG")
 let povertyDepthSVG = d3.select("#povertyDepthSVG")
 
-d3.csv("data/robin_modified.csv" , function(d , i, columns) {
+d3.csv("data/final_data.csv" , function(d , i, columns) {
 	return{
 		id : +d.id,
 		group : d["Basic Income Type"],
@@ -41,7 +41,7 @@ function dataloaded(data) {
 
 	
 	//Button for BI type
-	let types = ["All" , "RTC", "Universal"]
+	let types = ["All" , "RTC", "UBI"]
 	
 	let dropDown = d3.select("#button1")
 		
@@ -404,8 +404,14 @@ function showData(data){
 
 	d3.select("#labelHeader")
 		.append("text")
-		.style("text-anchor", "middle")	
-		.text("G")
+		.style("text-anchor", "middle")
+		.append("tspan")
+		.text("Basic")
+		.attr("font-weight" , "bold")
+		.append("tspan")
+		.attr("x", 0)
+		.attr("dy", 20)
+		.text("Guarantee")
 		.attr("font-weight" , "bold")
 		
 
@@ -433,7 +439,7 @@ function showData(data){
 		.append("text")
 		.style("text-anchor", "middle")
 		.append("tspan")
-		.text("Beneficiary")
+		.text("Income")
 		.attr("font-weight" , "bold")
 		.append("tspan")
 		.attr("x", 0)
@@ -465,12 +471,12 @@ function showData(data){
 		.append("text")
 		.style("text-anchor", "middle")
 		.append("tspan")
-		.text("Scale")
+		.text("Equivalence")
 		.attr("font-weight" , "bold")
 		.append("tspan")
 		.attr("x", 0)
 		.attr("dy", 20)
-		.text("Factor")
+		.text("Scale")
 		.attr("font-weight" , "bold")
 
 	
@@ -483,7 +489,7 @@ function showData(data){
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
 		.text(function(d) {if(d.group==="RTC"){return d.brr + "%"
-			} else if (d.group==="Universal"){return "NA"}})
+			} else if (d.group==="UBI"){return "NA"}})
 		.style("text-anchor", "middle")
 
 	joinBRRLabel.exit().remove()
@@ -493,7 +499,7 @@ function showData(data){
 		.attr("height" , positionScale.bandwidth)
 		.attr ("y", d => positionScale(d.id))
 		.text(function(d) {if(d.group==="RTC"){return d.brr + "%"
-			} else if (d.group==="Universal"){return "NA"}})
+			} else if (d.group==="UBI"){return "0%"}})
 		.style("text-anchor", "middle")
 
 	d3.select("#BRRHeader")
@@ -976,9 +982,7 @@ function showData(data){
 
 }
 
-function write(text){
-    container.append("div").text(text)
-}
+
 
 
 

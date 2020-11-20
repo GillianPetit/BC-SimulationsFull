@@ -11,15 +11,15 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/GillianPetit/BC-Simulations.git"
+    "url": "git+https://github.com/GillianPetit/BC-SimulationsFull.git"
   },
   "author": "Gillian Petit <gillian.schafer@ucalgary.ca>",
   "private": true,
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/GillianPetit/BC-Simulations/issues"
+    "url": "https://github.com/GillianPetit/BC-SimulationsFull/issues"
   },
-  "homepage": "https://github.com/GillianPetit/BC-Simulations#readme",
+  "homepage": "https://github.com/GillianPetit/BC-SimulationsFull#readme",
   "devDependencies": {
     "local-web-server": "^4.0.0",
     "shx": "^0.3.2"
