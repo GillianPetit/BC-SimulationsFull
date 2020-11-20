@@ -30,9 +30,6 @@
 		</select>
 	    </div>
 
-	     <div id="button5" style="transform:translate(410px, -77px)"></div>
-
-
 	  <div  style="transform:translate(1320px, 10px)">
 		  <svg width="120" height="40">
 	
@@ -95,7 +92,101 @@
 
 
 
+<!--New Section on Distribution Results (gini and quartiles) starts here-->
+		
+<div align = "center">
+	<h1>Distribution Results</h1>
+</div>
 
+<div style="transform:translate(10px, -2px)">
+	<select id="button5"> 
+	</select>
+</div>
+
+<div style="transform:translate(100px, -19px)">
+	<select multiple id="button6">
+	</select>
+</div>
+
+<div style="transform:translate(190px, -90px)">
+	<select id="button7">
+	</select>
+</div>
+
+<div style="transform:translate(290px, -109px)">
+	<select id="button8">
+	</select>
+</div>
+
+	<div  style="transform:translate(1280px, -30px)">
+		  <svg width="120" height="130">
+			  <rect x="0" y="0" width="20" height="20"  style="fill:#7b6888"/> 
+			  <rect x="0" y="30" width="20" height="20" style="fill:#6b486b"/> 
+			  <rect x="0" y ="60" width="20" height="20" style="fill:#a05d56"/> 
+			  <rect x="0" y="90" width="20" height="20" style="fill:#d0743c"/> 
+
+			  <text x="30" y="10" font-size="smaller">First</text>
+			   <text x="30" y="20" font-size="smaller">quartile</text>
+
+			  <text x="30" y="40" font-size="smaller">Second</text>
+			  <text x="30" y="50" font-size="smaller">quartile</text>
+
+
+			  <text x="30" y="70" font-size="smaller">Third</text>
+			  <text x="30" y="80" font-size="smaller">quartile</text>
+
+
+			  <text x="30" y="100" font-size="smaller">Fourth</text>
+			   <text x="30" y="110" font-size="smaller">quartile</text>
+
+
+		  </svg>
+
+	  </div>	
+
+	
+   <div id="container" style="margin-top: -180px" >
+  	 <svg width="1500" height="2000" >
+
+		<g id="group2SVG" style="transform:translate(0px, 75px)"></g>
+		<g id="xAxisGroup2" style="transform:translate(0px, 23px)"></g>
+
+		<g id="label2SVG" style="transform:translate(120px, 75px)"></g> 
+		<g id="label2Header" style="transform:translate(120px, 23px)" > </g>
+
+		<g id="income2SVG" style="transform:translate(230px, 75px)"></g> 
+		<g id="income2Header" style="transform:translate(230px, 23px)" > </g>
+
+		<g id="payment2SVG" style="transform:translate(330px, 75px)"></g> 
+		<g id="payment2Header" style="transform:translate(330px, 23px)" > </g>
+
+		<g id="BRRLabel2SVG" style="transform:translate(430px, 75px)"></g> 
+		<g id="BRR2Header" style="transform:translate(430px, 23px)" > </g>
+
+		<g id="break2SVG" style="transform:translate(480px, 60px)"></g> 
+		<g id="xAxisBreak2" style="transform:translate(480px, 60px)" > </g>
+		<g id="xAxisBreak2Text" style="transform:translate(480px, 23px)" > </g>
+
+		<g id="giniFamSVG" style="transform:translate(630px, 60px)" ></g>
+		<g id="xAxisGiniFam" style="transform:translate(630px, 60px)" > </g>
+		<g id="xAxisGiniFamText" style="transform:translate(630px, 23px)" > </g>
+
+		<g id="giniIndSVG" style="transform:translate(810px, 60px)" ></g>
+		<g id="xAxisGiniInd" style="transform:translate(810px, 60px)" > </g>
+		<g id="xAxisGiniIndText" style="transform:translate(810px, 23px)" > </g>
+
+		<g id="quartileFamSVG" style="transform:translate(980px, 60px)" ></g>
+		<g id="xAxisQuartileFam" style="transform:translate(980px, 60px)" > </g>
+		<g id="xAxisQuartileFamText" style="transform:translate(980px, 23px)" > </g>
+
+		<g id="quartileIndSVG" style="transform:translate(1140px, 60px)" ></g>
+		<g id="xAxisQuartileInd" style="transform:translate(1140px, 60px)" > </g>
+		<g id="xAxisQuartileIndText" style="transform:translate(1140px, 23px)" > </g>
+
+
+
+ 	  </svg>
+    </div>
 
 
 
@@ -105,6 +196,8 @@
     
     <script src="d3.js"></script>
     <script type="text/javascript" src="simulationsChart.js"></script>
+    <script type="text/javascript" src="distributionChart.js"></script>
+
     
  </body>    
 </html>
