@@ -1,7 +1,7 @@
 {
-  "name": "bc-simulations",
+  "name": "bc-simulationsFull",
   "version": "0.0.1",
-  "description": "BC simulations",
+  "description": "BC simulations FUll",
   "main": "index.html",
   "scripts": {
     "start": "ws --directory src",
