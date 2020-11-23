@@ -104,6 +104,21 @@ function dataloaded2(data) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
 
+	//Button for BRR
+	let BRRrate2 =  ["5", "15", "30", "50"]
+
+	let dropDownBRR2 = d3.select("#buttonBRR2")
+
+	dropDownBRR2.selectAll("option")
+		.data(BRRrate2)
+		.enter()
+		.append("option")
+		.attr("value" , function (d) {return d})
+		.text(function (d) {
+                        return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+                    })
+
+
 
 
 
@@ -321,7 +336,77 @@ function dataloaded2(data) {
 		showData2(dataFiltered)
 
 		})
-		}
+
+
+//If BRR Button pressed first
+	dropDownBRR2.on("change", function(){
+		var BRRvalues2 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){BRRvalues2.push(this.value)})
+		
+			console.log(BRRvalues2)
+
+		if(BRRvalues2.length>0 ){
+			dataFilteredBRR = dataAll.filter(function(d){return d.brr==parseInt(BRRvalues2[0]) || d.brr==parseInt(BRRvalues2[1]) || d.brr==parseInt(BRRvalues2[2]) || d.brr==parseInt(BRRvalues2[3]) })
+		} else{dataFilteredBRR = dataAll}
+
+		dataFiltered = dataFilteredBRR
+
+	//Equivalence Scale Button	
+	dropDown8.on("change", function(){
+		var values8 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values8.push(this.value)})
+		
+			console.log(values8)
+
+		if(values8.length>0 && values8 != "All" ){
+			dataFilteredPayment = dataFilteredBRR.filter(function(d){return d.payment == values8 })
+		} else{dataFilteredPayment = dataFilteredBRR}
+
+		dataFiltered = dataFilteredPayment
+
+
+	//Amount Button
+	dropDown6.on("change", function(){
+		var values6 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values6.push(this.value)})
+		
+			console.log(values6)
+
+		if(values6.length>0 ){
+			dataFilteredAmount = dataFilteredPayment.filter(function(d){return d.benefits==parseInt(values6[0]) || d.benefits==parseInt(values6[1]) || d.benefits==parseInt(values6[2]) || d.benefits==parseInt(values6[3]) })
+		} else{dataFilteredAmount = dataFilteredPayment}
+
+		dataFiltered = dataFilteredAmount
+
+
+		showData2(dataFiltered)
+
+		})
+	
+	
+
+		showData2(dataFiltered)
+	})
+
+
+		showData2(dataFiltered)
+
+	})
+
+
+
+
+
+}
 
 
 

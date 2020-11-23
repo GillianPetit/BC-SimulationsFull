@@ -53,7 +53,6 @@ function dataloaded(data) {
 		.text(function (d) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
-
 	
 	//Button for Benefit Amount
 	let amount = [ "1000", "5000", "10000", "20000"]
@@ -68,8 +67,6 @@ function dataloaded(data) {
 		.text(function (d) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
-
-
 		
 	//Button for Income Test Level
 	let income = [ "All" , "Family" , "Individual"]
@@ -84,8 +81,6 @@ function dataloaded(data) {
 		.text(function (d) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
-
-
 			
 	//Button for Payment Unit Level
 	let payment = [ "All" , "SQRT(2)" , "Per Capita"]
@@ -100,11 +95,24 @@ function dataloaded(data) {
 		.text(function (d) {
                         return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
                     })
+		
+	//Button for BRR
+	let BRRrate =  ["5", "15", "30", "50"]
+
+	let dropDownBRR = d3.select("#buttonBRR")
+
+	dropDownBRR.selectAll("option")
+		.data(BRRrate)
+		.enter()
+		.append("option")
+		.attr("value" , function (d) {return d})
+		.text(function (d) {
+                        return d[0].toUpperCase() + d.slice(1,d.length); // capitalize 1st letter
+                    })
 
 
-
-
-	//Create functions for updates - if type button pressed first
+//Create functions for updates - if type button pressed first
+	//Type button (UBI/RTC)
 	dropDown.on("change", function(){
 		var values = [];
 	
@@ -120,8 +128,8 @@ function dataloaded(data) {
 
 		dataFiltered = dataFilteredType
 
-
-		dropDown2.on("change", function(){
+	//Amount Button
+	dropDown2.on("change", function(){
 		var values2 = [];
 	
 		d3.select(this)
@@ -138,8 +146,8 @@ function dataloaded(data) {
 
 		dataFiltered = dataFilteredAmount
 
-
-		dropDown3.on("change", function(){
+	//Income Unit Button
+	dropDown3.on("change", function(){
 		var values3 = [];
 	
 		d3.select(this)
@@ -152,11 +160,9 @@ function dataloaded(data) {
 			dataFilteredIncome = dataFilteredAmount.filter(function(d){return d.income == values3 || d.income == "N/A" })
 		} else{dataFilteredIncome = dataFilteredAmount}
 
-		dataFiltered = dataFilteredIncome
+		dataFiltered = dataFilteredIncome	
 
-	
-
-
+	//Equivalence Scale Button
 	dropDown4.on("change", function(){
 		var values4 = [];
 	
@@ -172,27 +178,44 @@ function dataloaded(data) {
 
 		dataFiltered = dataFilteredPayment
 
+	//BRR Button
+	dropDownBRR.on("change", function(){
+		var BRRvalues = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){BRRvalues.push(this.value)})
+		
+			console.log(BRRvalues)
+
+		if(BRRvalues.length>0 ){
+			dataFilteredBRR = dataFilteredPayment.filter(function(d){return d.brr==parseInt(BRRvalues[0]) || d.brr==parseInt(BRRvalues[1]) || d.brr==parseInt(BRRvalues[2]) || d.brr==parseInt(BRRvalues[3]) })
+		} else{dataFilteredBRR = dataFilteredPayment}
+
+		console.log(dataFilteredBRR)	
+
+		dataFiltered = dataFilteredBRR
+
 		showData(dataFiltered)
 
 	})
 
-			showData(dataFiltered)
+		showData(dataFiltered)
 
-
-		})
-	
-
-			showData(dataFiltered)
-
-		})
-
+	})
 
 		showData(dataFiltered)
 
-		})
 
+	})
+	
+		showData(dataFiltered)
 
+	})
 
+		showData(dataFiltered)
+
+	})
 
 //If Benefit amount button is pressed first
 	dropDown2.on("change", function(){
@@ -318,8 +341,136 @@ function dataloaded(data) {
 		showData(dataFiltered)
 
 		})
-		}
+	
 
+//If BRR Button pressed first
+	dropDownBRR.on("change", function(){
+		var BRRvalues = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){BRRvalues.push(this.value)})
+		
+			console.log(BRRvalues)
+
+		if(BRRvalues.length>0 ){
+			dataFilteredBRR = dataAll.filter(function(d){return d.brr==parseInt(BRRvalues[0]) || d.brr==parseInt(BRRvalues[1]) || d.brr==parseInt(BRRvalues[2]) || d.brr==parseInt(BRRvalues[3]) })
+		} else{dataFilteredBRR = dataAll}
+
+		dataFiltered = dataFilteredBRR
+
+		//Amount Button
+	dropDown2.on("change", function(){
+		var values2 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values2.push(this.value)})
+		
+			console.log(values2)
+
+		if(values2.length>0 ){
+			dataFilteredAmount = dataFilteredBRR.filter(function(d){return d.benefits==parseInt(values2[0]) || d.benefits==parseInt(values2[1]) || d.benefits==parseInt(values2[2]) || d.benefits==parseInt(values2[3]) })
+		} else{dataFilteredAmount = dataFilteredBRR}
+
+		dataFiltered = dataFilteredAmount
+
+	//Equivalence Scale Button	
+	dropDown4.on("change", function(){
+		var values4 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values4.push(this.value)})
+		
+			console.log(values4)
+
+		if(values4.length>0 && values4 != "All" ){
+			dataFilteredPayment = dataFilteredAmount.filter(function(d){return d.payment == values4 })
+		} else{dataFilteredPayment = dataFilteredAmount}
+
+		dataFiltered = dataFilteredPayment
+
+		showData(dataFiltered)
+
+	})
+	
+		showData(dataFiltered)
+	})
+
+
+		showData(dataFiltered)
+
+	})
+
+		
+
+//If BRR Button pressed first
+	dropDownBRR.on("change", function(){
+		var BRRvalues = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){BRRvalues.push(this.value)})
+		
+			console.log(BRRvalues)
+
+		if(BRRvalues.length>0 ){
+			dataFilteredBRR = dataAll.filter(function(d){return d.brr==parseInt(BRRvalues[0]) || d.brr==parseInt(BRRvalues[1]) || d.brr==parseInt(BRRvalues[2]) || d.brr==parseInt(BRRvalues[3]) })
+		} else{dataFilteredBRR = dataAll}
+
+		dataFiltered = dataFilteredBRR
+
+	//Equivalence Scale Button	
+	dropDown4.on("change", function(){
+		var values4 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values4.push(this.value)})
+		
+			console.log(values4)
+
+		if(values4.length>0 && values4 != "All" ){
+			dataFilteredPayment = dataFilteredBRR.filter(function(d){return d.payment == values4 })
+		} else{dataFilteredPayment = dataFilteredBRR}
+
+		dataFiltered = dataFilteredPayment
+
+
+	//Amount Button
+	dropDown2.on("change", function(){
+		var values2 = [];
+	
+		d3.select(this)
+			.selectAll("option:checked")
+			.each(function(){values2.push(this.value)})
+		
+			console.log(values2)
+
+		if(values2.length>0 ){
+			dataFilteredAmount = dataFilteredPayment.filter(function(d){return d.benefits==parseInt(values2[0]) || d.benefits==parseInt(values2[1]) || d.benefits==parseInt(values2[2]) || d.benefits==parseInt(values2[3]) })
+		} else{dataFilteredAmount = dataFilteredPayment}
+
+		dataFiltered = dataFilteredAmount
+
+
+		showData(dataFiltered)
+
+		})
+	
+	
+
+		showData(dataFiltered)
+	})
+
+
+		showData(dataFiltered)
+
+	})
+
+
+}
 
 
 
